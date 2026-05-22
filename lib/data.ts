@@ -46,7 +46,7 @@ export const PHYSICAL_STATS = [
   {
     id: "weight",
     label: "WEIGHT",
-    rawValue: "66",
+    rawValue: "59",
     unit: "KG",
     comparison: "Exactly the density of someone who takes up the right amount of space",
     subtext: "Number is irrelevant. Presence is not.",
