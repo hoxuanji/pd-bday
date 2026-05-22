@@ -1,0 +1,192 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useState } from "react";
+import dynamic from "next/dynamic";
+import BootScreen from "@/components/boot/BootScreen";
+
+// Lazy-load heavy sections to keep initial bundle lean
+const PhysicalStats = dynamic(() => import("@/components/stats/PhysicalStats"));
+const PersonalityEngine = dynamic(() => import("@/components/personality/PersonalityEngine"));
+const DaySimulator = dynamic(() => import("@/components/simulator/DaySimulator"));
+const MemoryVault = dynamic(() => import("@/components/vault/MemoryVault"));
+const ChaosAnalytics = dynamic(() => import("@/components/analytics/ChaosAnalytics"));
+const TimeVisualization = dynamic(() => import("@/components/time/TimeVisualization"));
+const BirthdayEnding = dynamic(() => import("@/components/ending/BirthdayEnding"));
+
+const NAV_ITEMS = [
+  { id: "stats", label: "STATS" },
+  { id: "personality", label: "CORE" },
+  { id: "simulator", label: "SIM" },
+  { id: "vault", label: "VAULT" },
+  { id: "analytics", label: "DATA" },
+  { id: "time", label: "TIME" },
+  { id: "ending", label: "END" },
+];
+
+export default function Home() {
+  const [booted, setBooted] = useState(false);
+
+  const handleBootComplete = useCallback(() => setBooted(true), []);
+
+  return (
+    <main className="relative bg-bg-base min-h-screen">
+      {/* Boot screen — fixed overlay until dismissed */}
+      <AnimatePresence>
+        {!booted && <BootScreen key="boot" onComplete={handleBootComplete} />}
+      </AnimatePresence>
+
+      {/* Main experience */}
+      <AnimatePresence>
+        {booted && (
+          <motion.div
+            key="main"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Side navigation */}
+            <SideNav />
+
+            {/* Hero */}
+            <Hero />
+
+            {/* Sections */}
+            <PhysicalStats />
+            <PersonalityEngine />
+            <DaySimulator />
+            <MemoryVault />
+            <ChaosAnalytics />
+            <TimeVisualization />
+            <BirthdayEnding />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </main>
+  );
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+
+function Hero() {
+  return (
+    <section
+      id="hero"
+      className="min-h-screen flex flex-col justify-between px-6 md:px-12 pt-12 pb-10 relative grid-overlay-lg overflow-hidden"
+    >
+      {/* Top bar */}
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="flex items-center justify-between"
+      >
+        <span className="font-mono text-[10px] text-ink-muted tracking-widest uppercase">
+          PD-OS v27.0.0
+        </span>
+        <span className="font-mono text-[10px] text-ink-muted tracking-widest uppercase">
+          22.05.1999 — {new Date().getFullYear()}
+        </span>
+      </motion.div>
+
+      {/* Center content */}
+      <div className="flex-1 flex flex-col justify-center">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="font-mono text-[10px] text-ink-muted tracking-widest uppercase mb-6"
+        >
+          SEC_01 // SUBJECT PROFILE — BIRTHDAY EDITION
+        </motion.p>
+
+        <div className="overflow-hidden">
+          <motion.h1
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+            className="font-sans font-bold text-ink-primary leading-none"
+            style={{ fontSize: "clamp(5rem,18vw,14rem)", letterSpacing: "-0.04em" }}
+          >
+            PAPIYA
+          </motion.h1>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, x: -16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-center gap-4 mt-6 flex-wrap"
+        >
+          <span className="font-mono text-xs text-accent-lime tracking-widest uppercase">
+            TURNING 27
+          </span>
+          <span className="font-mono text-[10px] text-ink-muted">·</span>
+          <span className="font-mono text-xs text-ink-secondary tracking-widest">
+            TODAY · MAY 22 · INTERACTIVE EXPERIENCE
+          </span>
+        </motion.div>
+
+        {/* Accent bar */}
+        <motion.div
+          initial={{ scaleX: 0, originX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.2, delay: 0.7, ease: [0.76, 0, 0.24, 1] }}
+          className="h-0.5 bg-accent-lime mt-8 w-full max-w-md"
+        />
+      </div>
+
+      {/* Bottom status row */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="flex items-center justify-between flex-wrap gap-4"
+      >
+        <div className="flex items-center gap-6">
+          {["CHAOS: HIGH", "DRAMA: OLYMPIC", "COFFEE: CRITICAL"].map((s) => (
+            <span key={s} className="font-mono text-[10px] text-ink-muted tracking-widest">
+              {s}
+            </span>
+          ))}
+        </div>
+        <motion.div
+          animate={{ opacity: [1, 0.3, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="font-mono text-[10px] text-accent-lime tracking-widest"
+        >
+          ↓ SCROLL TO EXPLORE
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
+
+// ─── Side Navigation ──────────────────────────────────────────────────────────
+
+function SideNav() {
+  function scrollTo(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  return (
+    <nav
+      className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-3"
+      aria-label="Section navigation"
+    >
+      {NAV_ITEMS.map((item) => (
+        <button
+          key={item.id}
+          onClick={() => scrollTo(item.id)}
+          className="group flex items-center gap-2 cursor-pointer"
+          aria-label={`Jump to ${item.label}`}
+        >
+          <span className="font-mono text-[8px] text-ink-muted tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-right w-10">
+            {item.label}
+          </span>
+          <div className="w-1 h-1 rounded-full bg-border-strong group-hover:bg-accent-lime group-hover:scale-150 transition-all duration-200" />
+        </button>
+      ))}
+    </nav>
+  );
+}
