@@ -58,7 +58,7 @@ function Backdrop({ href, x=0, y=0, w=1200, h=900, dim=0.55 }: {
 }
 
 // ─── 01  MIDNIGHT ────────────────────────────────────────────────────────────
-// HERO: phone glow + digital rain + pulsing rings + floating timestamps
+// HERO: soft phone glow + live timestamp + drifting particles
 function MidnightSVG() {
   const [time, setTime] = useState("--:--:--");
   const pre = useReducedMotion();
@@ -79,89 +79,55 @@ function MidnightSVG() {
       <Defs />
       <Backdrop href="/papiya_6.jpg" dim={0.6} />
 
-      {/* ── Hero: pulsing phone glow bloom ── */}
-      <motion.circle cx={400} cy={480} r={260} fill={BLUE} filter="url(#blur-lg)"
-        animate={pre ? {} : { scale: [1, 1.4, 1], opacity: [0.18, 0.35, 0.18] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      {/* ── Soft phone glow bloom — the only large element ── */}
+      <motion.circle cx={400} cy={480} r={220} fill={BLUE} filter="url(#blur-lg)"
+        animate={pre ? {} : { opacity: [0.14, 0.26, 0.14], scale: [1, 1.2, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         style={{ transformOrigin: "400px 480px" }}
       />
 
-      {/* ── Concentric rings pulsing outward ── */}
-      {[1, 2, 3].map(i => (
-        <motion.circle key={i} cx={400} cy={480} r={80}
-          stroke={BLUE} strokeWidth={1.5} fill="none" opacity={0}
-          animate={{ r: [80, 280], opacity: [0.6, 0] }}
-          transition={{ duration: 3, delay: i * 1, repeat: Infinity, ease: "easeOut" }}
-        />
-      ))}
+      {/* ── Single expanding ring — subtle ── */}
+      <motion.circle cx={400} cy={480} r={60} stroke={BLUE} strokeWidth={1}
+        fill="none" opacity={0}
+        animate={{ r: [60, 260], opacity: [0.5, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeOut" }}
+      />
 
-      {/* ── Phone device ── */}
-      <rect x={340} y={340} width={120} height={200} rx={20}
-        fill="#0F172A" stroke={BLUE} strokeWidth={1.5} opacity={0.9} />
-      {/* Screen */}
-      <motion.rect x={348} y={358} width={104} height={164} rx={12}
+      {/* ── Simple phone silhouette — clean outline only ── */}
+      <rect x={346} y={360} width={108} height={188} rx={18}
+        stroke={BLUE} strokeWidth={1.5} fill="none" opacity={0.35} />
+      {/* Screen glow — single pulse */}
+      <motion.rect x={354} y={376} width={92} height={154} rx={12}
         fill={BLUE} opacity={0}
-        animate={{ opacity: [0.08, 0.22, 0.08] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={{ opacity: [0.06, 0.16, 0.06] }}
+        transition={{ duration: 3, repeat: Infinity }}
       />
-      {/* Screen content lines */}
-      <rect x={360} y={374} width={60} height={3} rx={1.5} fill={CYAN} opacity={0.5} />
-      <rect x={360} y={383} width={40} height={3} rx={1.5} fill={CYAN} opacity={0.35} />
-      <rect x={360} y={392} width={52} height={3} rx={1.5} fill={CYAN} opacity={0.35} />
-      {/* Message bubbles */}
-      <motion.rect x={356} y={408} width={68} height={22} rx={11}
-        fill={BLUE} opacity={0}
-        animate={{ opacity: [0, 0.7, 0.7, 0] }}
-        transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-      />
-      <motion.rect x={376} y={434} width={52} height={22} rx={11}
-        fill="#1D4ED8" opacity={0}
-        animate={{ opacity: [0, 0.6, 0.6, 0] }}
-        transition={{ duration: 4, repeat: Infinity, delay: 2 }}
-      />
-      {/* Typing dots */}
-      <motion.g animate={{ opacity: [1, 0, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
-        {[364, 376, 388].map((x, i) => (
-          <motion.circle key={i} cx={x} cy={468} r={4} fill={CYAN}
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 0.6, delay: i * 0.2, repeat: Infinity }}
-          />
-        ))}
-      </motion.g>
 
-      {/* ── Floating timestamps ── */}
-      <motion.text x={620} y={220} fill={CYAN} fontSize={62} fontFamily={MONO} fontWeight="700"
-        animate={{ opacity: [0.7, 1, 0.7] }}
+      {/* ── Live timestamp — the real hero text ── */}
+      <motion.text x={560} y={200} fill={CYAN} fontSize={72} fontFamily={MONO} fontWeight="700"
+        animate={{ opacity: [0.75, 1, 0.75] }}
         transition={{ duration: 2.5, repeat: Infinity }}
       >{time}</motion.text>
 
-      <motion.text x={620} y={268} fill={BLUE} fontSize={14} fontFamily={MONO} letterSpacing={2} opacity={0.6}
-        animate={{ opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 3, repeat: Infinity }}
-      >43.1107° N  12.3908° E · PERUGIA</motion.text>
+      <text x={560} y={244} fill={BLUE} fontSize={13} fontFamily={MONO}
+        letterSpacing={2} opacity={0.5}>
+        43.1107° N  12.3908° E · PERUGIA
+      </text>
 
-      {/* ── Drifting message fragments ── */}
-      {["seen ✓✓", "typing...", "23:47", "read"].map((txt, i) => (
-        <motion.text key={i} x={640 + i * 10} fill={BLUE} fontSize={13} fontFamily={MONO}
-          animate={{ y: [350 + i * 60, 100 + i * 40], opacity: [0.5, 0] }}
-          transition={{ duration: 5 + i, delay: i * 1.5, repeat: Infinity, ease: "easeOut" }}
-        >{txt}</motion.text>
-      ))}
+      {/* ── Horizontal scan line — barely visible ── */}
+      <motion.line x1={0} y1={0} x2={1200} y2={0}
+        stroke={BLUE} strokeWidth={0.8} opacity={0.08}
+        animate={{ y1: [150, 820, 150], y2: [150, 820, 150] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+      />
 
-      {/* ── Digital rain particles ── */}
-      {Array.from({ length: 12 }, (_, i) => (
-        <motion.circle key={i} cx={700 + (i % 5) * 90} cy={0} r={1.5} fill={CYAN}
-          animate={{ cy: [0, 900], opacity: [0, 0.6, 0] }}
-          transition={{ duration: 3 + (i % 4) * 0.6, delay: i * 0.4, repeat: Infinity, ease: "linear" }}
+      {/* ── Subtle particles — right side only, not overwhelming ── */}
+      {[760, 880, 980, 1080, 1150].map((cx, i) => (
+        <motion.circle key={i} cx={cx} cy={880} r={1.5} fill={CYAN}
+          animate={{ cy: [880, 80], opacity: [0.6, 0] }}
+          transition={{ duration: 5 + i * 0.6, delay: i * 1.2, repeat: Infinity, ease: "easeOut" }}
         />
       ))}
-
-      {/* ── Horizontal scan line ── */}
-      <motion.line x1={0} y1={0} x2={1200} y2={0}
-        stroke={BLUE} strokeWidth={1} opacity={0.1}
-        animate={{ y1: [100, 860, 100], y2: [100, 860, 100] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-      />
     </svg>
   );
 }
