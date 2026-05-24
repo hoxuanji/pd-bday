@@ -41,3 +41,38 @@ export function mapRange(
 ): number {
   return ((value - inMin) / (inMax - inMin)) * (outMax - outMin) + outMin;
 }
+
+export function computeAge(dob: Date): number {
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  return age;
+}
+
+/** Returns the current hour/minute/second in Papiya's timezone (Europe/Rome). */
+export function getSubjectTime(tz: string): { hour: number; minute: number; second: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const get = (type: string) =>
+    parseInt(parts.find(p => p.type === type)?.value ?? "0") % 24;
+
+  return { hour: get("hour"), minute: get("minute"), second: get("second") };
+}
+
+/** Returns a formatted time string (HH:MM:SS) in the given timezone. */
+export function getSubjectTimeString(tz: string): string {
+  return new Date().toLocaleTimeString("en-US", {
+    timeZone: tz,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+}

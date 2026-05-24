@@ -1,42 +1,44 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type TargetAndTransition } from "framer-motion";
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import BootScreen from "@/components/boot/BootScreen";
+import { SUBJECT, CHAOS_WEATHER } from "@/lib/data";
+import { ACCENT_COLORS } from "@/lib/utils";
 
-// Lazy-load heavy sections to keep initial bundle lean
-const PhysicalStats = dynamic(() => import("@/components/stats/PhysicalStats"));
+const PhysicalStats    = dynamic(() => import("@/components/stats/PhysicalStats"));
 const PersonalityEngine = dynamic(() => import("@/components/personality/PersonalityEngine"));
-const DaySimulator = dynamic(() => import("@/components/simulator/DaySimulator"));
-const MemoryVault = dynamic(() => import("@/components/vault/MemoryVault"));
-const ChaosAnalytics = dynamic(() => import("@/components/analytics/ChaosAnalytics"));
+const DaySimulator     = dynamic(() => import("@/components/simulator/DaySimulator"));
+const MemoryVault      = dynamic(() => import("@/components/vault/MemoryVault"));
+const ChaosAnalytics   = dynamic(() => import("@/components/analytics/ChaosAnalytics"));
 const TimeVisualization = dynamic(() => import("@/components/time/TimeVisualization"));
-const BirthdayEnding = dynamic(() => import("@/components/ending/BirthdayEnding"));
+const BirthdayEnding   = dynamic(() => import("@/components/ending/BirthdayEnding"));
+const RightNow         = dynamic(() => import("@/components/daily/RightNow"));
+const MoodOrb          = dynamic(() => import("@/components/daily/MoodOrb"));
 
 const NAV_ITEMS = [
-  { id: "stats", label: "STATS" },
-  { id: "personality", label: "CORE" },
-  { id: "simulator", label: "SIM" },
-  { id: "vault", label: "VAULT" },
-  { id: "analytics", label: "DATA" },
-  { id: "time", label: "TIME" },
-  { id: "ending", label: "END" },
+  { id: "rightnow",    label: "NOW"   },
+  { id: "stats",       label: "STATS" },
+  { id: "personality", label: "CORE"  },
+  { id: "simulator",   label: "SIM"   },
+  { id: "vault",       label: "VAULT" },
+  { id: "analytics",   label: "DATA"  },
+  { id: "time",        label: "TIME"  },
+  { id: "mood",        label: "MOOD"  },
+  { id: "ending",      label: "END"   },
 ];
 
 export default function Home() {
   const [booted, setBooted] = useState(false);
-
   const handleBootComplete = useCallback(() => setBooted(true), []);
 
   return (
     <main className="relative bg-bg-base min-h-screen">
-      {/* Boot screen — fixed overlay until dismissed */}
       <AnimatePresence>
         {!booted && <BootScreen key="boot" onComplete={handleBootComplete} />}
       </AnimatePresence>
 
-      {/* Main experience */}
       <AnimatePresence>
         {booted && (
           <motion.div
@@ -45,19 +47,16 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Side navigation */}
             <SideNav />
-
-            {/* Hero */}
             <Hero />
-
-            {/* Sections */}
+            <RightNow />
             <PhysicalStats />
             <PersonalityEngine />
             <DaySimulator />
             <MemoryVault />
             <ChaosAnalytics />
             <TimeVisualization />
+            <MoodOrb />
             <BirthdayEnding />
           </motion.div>
         )}
@@ -68,7 +67,51 @@ export default function Home() {
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
+function heroBadge(dob: Date, age: number): { label: string; sub: string } {
+  const today = new Date();
+  const isBirthday =
+    today.getMonth() === dob.getMonth() && today.getDate() === dob.getDate();
+  const birthdayPassed =
+    today.getMonth() > dob.getMonth() ||
+    (today.getMonth() === dob.getMonth() && today.getDate() > dob.getDate());
+  const dateStr = dob
+    .toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+    .toUpperCase();
+
+  if (isBirthday)
+    return { label: `${age} TODAY`, sub: `HAPPY BIRTHDAY · ${dateStr} · INTERACTIVE EXPERIENCE` };
+  if (birthdayPassed)
+    return { label: `${age} YEARS`, sub: `BORN ${dateStr} · INTERACTIVE EXPERIENCE` };
+  return { label: `TURNING ${age}`, sub: `BIRTHDAY ON ${dateStr} · INTERACTIVE EXPERIENCE` };
+}
+
+// ─── Chaos Weather animated icon ─────────────────────────────────────────────
+
+const WEATHER_SYMBOLS: Record<string, string> = {
+  storm: "⌁", cloud: "≋", crisis: "◈", clear: "◉",
+  chaos: "✦", dance: "◆", dread: "○",
+};
+
+const WEATHER_ANIM: Record<string, TargetAndTransition> = {
+  storm:  { x: [-2, 2, -2], transition: { duration: 0.4, repeat: Infinity } },
+  cloud:  { y: [0, -3, 0],  transition: { duration: 3,   repeat: Infinity, ease: "easeInOut" } },
+  crisis: { rotate: [0, 15, 0, -15, 0], transition: { duration: 0.6, repeat: Infinity } },
+  clear:  { scale: [1, 1.12, 1], transition: { duration: 3, repeat: Infinity, ease: "easeInOut" } },
+  chaos:  { rotate: [0, 360], transition: { duration: 3, repeat: Infinity, ease: "linear" } },
+  dance:  { y: [0, -5, 0], rotate: [0, 8, 0, -8, 0], transition: { duration: 1, repeat: Infinity } },
+  dread:  { scale: [1, 0.92, 1], transition: { duration: 2, repeat: Infinity, ease: "easeInOut" } },
+};
+
+const WEATHER_COLORS: Record<string, string> = {
+  storm: "text-accent-orange", cloud: "text-accent-blue",  crisis: "text-accent-pink",
+  clear: "text-accent-lime",   chaos: "text-accent-pink",  dance:  "text-accent-lime",
+  dread: "text-accent-yellow",
+};
+
 function Hero() {
+  const { label, sub } = heroBadge(SUBJECT.dob, SUBJECT.age);
+  const today = CHAOS_WEATHER[new Date().getDay()];
+
   return (
     <section
       id="hero"
@@ -82,7 +125,7 @@ function Hero() {
         className="flex items-center justify-between"
       >
         <span className="font-mono text-[10px] text-ink-muted tracking-widest uppercase">
-          PD-OS v27.0.0
+          PD-OS v{SUBJECT.age}.0.0
         </span>
         <span className="font-mono text-[10px] text-ink-muted tracking-widest uppercase">
           22.05.1999 — {new Date().getFullYear()}
@@ -119,15 +162,12 @@ function Hero() {
           className="flex items-center gap-4 mt-6 flex-wrap"
         >
           <span className="font-mono text-xs text-accent-lime tracking-widest uppercase">
-            TURNING 27
+            {label}
           </span>
           <span className="font-mono text-[10px] text-ink-muted">·</span>
-          <span className="font-mono text-xs text-ink-secondary tracking-widest">
-            TODAY · MAY 22 · INTERACTIVE EXPERIENCE
-          </span>
+          <span className="font-mono text-xs text-ink-secondary tracking-widest">{sub}</span>
         </motion.div>
 
-        {/* Accent bar */}
         <motion.div
           initial={{ scaleX: 0, originX: 0 }}
           animate={{ scaleX: 1 }}
@@ -136,20 +176,38 @@ function Hero() {
         />
       </div>
 
-      {/* Bottom status row */}
+      {/* Bottom — Chaos Weather replaces static status bar */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
-        className="flex items-center justify-between flex-wrap gap-4"
+        className="flex items-end justify-between flex-wrap gap-6"
       >
-        <div className="flex items-center gap-6">
-          {["CHAOS: HIGH", "DRAMA: OLYMPIC", "COFFEE: CRITICAL"].map((s) => (
-            <span key={s} className="font-mono text-[10px] text-ink-muted tracking-widest">
-              {s}
-            </span>
-          ))}
+        {/* Weather widget */}
+        <div className="flex items-center gap-4">
+          <motion.span
+            className={`font-mono text-2xl select-none ${WEATHER_COLORS[today.icon] ?? "text-ink-secondary"}`}
+            animate={WEATHER_ANIM[today.icon]}
+          >
+            {WEATHER_SYMBOLS[today.icon]}
+          </motion.span>
+          <div>
+            <p className="font-mono text-[9px] text-ink-muted tracking-widest uppercase mb-0.5">
+              TODAY&apos;S FORECAST
+            </p>
+            <p className={`font-mono text-xs font-bold tracking-widest ${WEATHER_COLORS[today.icon] ?? "text-ink-secondary"}`}>
+              {today.forecast}
+            </p>
+            <div className="flex gap-3 mt-1 flex-wrap">
+              {today.conditions.map((c) => (
+                <span key={c.label} className="font-mono text-[9px] text-ink-muted tracking-wide">
+                  {c.label}: <span className="text-ink-secondary">{c.value}</span>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
+
         <motion.div
           animate={{ opacity: [1, 0.3, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}

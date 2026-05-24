@@ -2,25 +2,32 @@
 // SUBJECT CONFIGURATION — all content lives here
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { computeAge } from "./utils";
+
+const _dob = new Date("1999-05-22T00:00:00");
+const _age = computeAge(_dob); // recomputed on every page load
+
 export const SUBJECT = {
   name: "PAPIYA",
   displayName: "Papiya",
   initials: "PD",
-  dob: new Date("1999-05-22T00:00:00"),
-  age: 27,
+  dob: _dob,
+  age: _age,
   nickname: "Tumpa",
-} as const;
+  timezone: "Europe/Rome",
+  location: "Perugia, Italy",
+};
 
 // ─── BOOT SCREEN ─────────────────────────────────────────────────────────────
 
 export const BOOT_SYSTEM_CHECKS = [
-  { label: "CPU",  value: "OVERTHINKING ENGINE v27.0 + GUILT_PROCESSOR", status: "OK"   as const },
-  { label: "RAM",  value: "WARDROBE INDEX  [OVERFLOW — CRITICAL]",        status: "CRIT" as const },
-  { label: "GPU",  value: "DANCE_FLOOR_RENDERER · ATTENTION_MAGNET",      status: "OK"   as const },
-  { label: "NET",  value: "SELECTIVE_CHAOS_NETWORK  [ON DEMAND]",         status: "OK"   as const },
-  { label: "PWR",  value: "FROOTY + WINE + SPITE  [LOW_COFFEE MODE]",     status: "WARN" as const },
-  { label: "OS",   value: "PD-OS v27.0  ·  GEMINI EDITION  ·  ITALY ARC", status: "OK"   as const },
-] as const;
+  { label: "CPU",  value: `OVERTHINKING ENGINE v${_age}.0 + GUILT_PROCESSOR`, status: "OK"   as const },
+  { label: "RAM",  value: "WARDROBE INDEX  [OVERFLOW — CRITICAL]",             status: "CRIT" as const },
+  { label: "GPU",  value: "DANCE_FLOOR_RENDERER · ATTENTION_MAGNET",           status: "OK"   as const },
+  { label: "NET",  value: "SELECTIVE_CHAOS_NETWORK  [ON DEMAND]",              status: "OK"   as const },
+  { label: "PWR",  value: "FROOTY + WINE + SPITE  [LOW_COFFEE MODE]",          status: "WARN" as const },
+  { label: "OS",   value: `PD-OS v${_age}.0  ·  GEMINI EDITION  ·  ITALY ARC`, status: "OK"   as const },
+];
 
 export const BOOT_TRAIT_LOADS = [
   { name: "DRAMA_ENGINE  [HUNGER_LINKED]",      duration: 320, success: true  },
@@ -587,3 +594,191 @@ export const BIRTHDAY_MESSAGE = {
   ],
   closing: "— Jeemut, May 2026",
 };
+
+// ─── RIGHT NOW (hourly live status) ──────────────────────────────────────────
+
+export type RightNowBlock = {
+  hours: number[];
+  icon: "moon" | "zzz" | "alarm" | "wave" | "fork" | "chicken" | "nap" | "wake" | "sparkle" | "night";
+  label: string;
+  description: string;
+  accent: "lime" | "pink" | "blue" | "orange" | "yellow";
+};
+
+export const RIGHT_NOW_DATA: RightNowBlock[] = [
+  {
+    hours: [0, 1, 2],
+    icon: "night",
+    label: "MIDNIGHT OPERATIONS",
+    description: "Spiral-texting someone about the nature of time. A LIIT may or may not be involved. The decisions made right now will be reviewed at 9am with full regret.",
+    accent: "blue",
+  },
+  {
+    hours: [3, 4, 5, 6],
+    icon: "zzz",
+    label: "SLEEP WINDOW (FINALLY)",
+    description: "Asleep. The alarm is set for 3 hours from now. This will not help. The snooze button has already been forgiven in advance.",
+    accent: "yellow",
+  },
+  {
+    hours: [7, 8],
+    icon: "alarm",
+    label: "ALARM INCIDENT",
+    description: "The alarm has been silenced. Multiple times. The body has not moved. The alarm has lost. This is not a surprise to anyone involved.",
+    accent: "orange",
+  },
+  {
+    hours: [9, 10],
+    icon: "wave",
+    label: "TRANSITIONAL STATE",
+    description: "Horizontal but technically awake. 'On my way' was sent 40 minutes ago. This was aspirational. Current location: same.",
+    accent: "pink",
+  },
+  {
+    hours: [11, 12],
+    icon: "fork",
+    label: "PRE-LUNCH DETERIORATION",
+    description: "Hungry. Committed to finishing one more task. The task has become five tasks. The hunger is becoming structural. ETA to eating: unknown.",
+    accent: "orange",
+  },
+  {
+    hours: [13, 14],
+    icon: "chicken",
+    label: "CULINARY OPERATIONS",
+    description: "Carefully extracting all chicken from lunch with the focus of a neurosurgeon. The remainder of the meal will be perfect. This process cannot be rushed.",
+    accent: "lime",
+  },
+  {
+    hours: [15, 16],
+    icon: "nap",
+    label: "THE 20-MINUTE NAP",
+    description: "A nap has been initiated. 'Just 20 minutes' was stated with full sincerity. Current elapsed time: unknown. ETA: 3 hours minimum.",
+    accent: "blue",
+  },
+  {
+    hours: [17, 18],
+    icon: "wake",
+    label: "RECOVERY PHASE",
+    description: "Woke up from the 20-minute nap. It has been 3 hours. The evening has quietly begun without her. She is processing this.",
+    accent: "yellow",
+  },
+  {
+    hours: [19, 20, 21],
+    icon: "sparkle",
+    label: "GETTING READY",
+    description: "Getting ready to go out. Will be 20 minutes late. Everyone involved has already adjusted their expectations accordingly. The wardrobe is open.",
+    accent: "pink",
+  },
+  {
+    hours: [22, 23],
+    icon: "moon",
+    label: "NIGHT PROTOCOL ACTIVE",
+    description: "Most vocal or most silent person in the room. No instrument can determine which. The mode switches without announcement or pattern.",
+    accent: "lime",
+  },
+];
+
+// ─── CHAOS WEATHER (daily, day-of-week driven) ───────────────────────────────
+
+export type WeatherIcon = "storm" | "cloud" | "crisis" | "clear" | "chaos" | "dance" | "dread";
+
+export type ChaosWeatherDay = {
+  forecast: string;
+  icon: WeatherIcon;
+  temp: string;
+  conditions: { label: string; value: string }[];
+};
+
+// Index 0 = Sunday … 6 = Saturday
+export const CHAOS_WEATHER: ChaosWeatherDay[] = [
+  {
+    forecast: "PRE-MONDAY ANXIETY",
+    icon: "dread",
+    temp: "COLD OPEN",
+    conditions: [
+      { label: "DREAD INDEX", value: "CRITICAL" },
+      { label: "SUNDAY SCARIES", value: "ACTIVE" },
+      { label: "MOTIVATION", value: "0%" },
+    ],
+  },
+  {
+    forecast: "STORM ADVISORY",
+    icon: "storm",
+    temp: "VOLATILE",
+    conditions: [
+      { label: "DRAMA PRESSURE", value: "HIGH" },
+      { label: "TIRAMISU NEEDED", value: "YES" },
+      { label: "APPROACH WITH", value: "CAUTION" },
+    ],
+  },
+  {
+    forecast: "PARTLY DRAMATIC",
+    icon: "cloud",
+    temp: "MILD CHAOS",
+    conditions: [
+      { label: "WARDROBE OVERFLOW", value: "MODERATE" },
+      { label: "NAP RISK", value: "60%" },
+      { label: "FROOTY SUPPLY", value: "RECOMMENDED" },
+    ],
+  },
+  {
+    forecast: "MIDWEEK CRISIS",
+    icon: "crisis",
+    temp: "PEAK VARIANCE",
+    conditions: [
+      { label: "CHAOS INDEX", value: "ELEVATED" },
+      { label: "EMOTIONAL SPIKE", value: "IMMINENT" },
+      { label: "STATUS", value: "SEND HELP" },
+    ],
+  },
+  {
+    forecast: "CLEARING",
+    icon: "clear",
+    temp: "IMPROVING",
+    conditions: [
+      { label: "RECOVERY", value: "IN PROGRESS" },
+      { label: "FROOTY", value: "RECOMMENDED" },
+      { label: "MOOD", value: "ACCEPTABLE" },
+    ],
+  },
+  {
+    forecast: "MAXIMUM CHAOS",
+    icon: "chaos",
+    temp: "HOT",
+    conditions: [
+      { label: "NIGHT MODE", value: "ACTIVATES 22:00" },
+      { label: "LIIT RISK", value: "ELEVATED" },
+      { label: "WARDROBE CHANGE", value: "IMMINENT" },
+    ],
+  },
+  {
+    forecast: "DANCE FLOOR CONDITIONS",
+    icon: "dance",
+    temp: "PEAK PAPIYA",
+    conditions: [
+      { label: "OPTIMAL FOR", value: "DANCING" },
+      { label: "TIRAMISU", value: "MANDATORY" },
+      { label: "CONSEQUENCES", value: "IGNORED" },
+    ],
+  },
+];
+
+// ─── MOOD ORB ─────────────────────────────────────────────────────────────────
+
+export type MoodId = "chaos" | "fine" | "quiet" | "drama" | "tiramisu";
+
+export type MoodOption = {
+  id: MoodId;
+  label: string;
+  symbol: string;
+  color: "lime" | "pink" | "blue" | "orange" | "yellow";
+  sub: string;
+};
+
+export const MOOD_OPTIONS: MoodOption[] = [
+  { id: "chaos",     label: "CHAOS MODE",      symbol: "◈", color: "orange", sub: "running on spite and momentum"      },
+  { id: "fine",      label: "FINE. (I'M FINE.)", symbol: "◉", color: "lime",   sub: "technically okay. probably."       },
+  { id: "quiet",     label: "QUIET MODE",      symbol: "○", color: "blue",   sub: "not unavailable. just not here."   },
+  { id: "drama",     label: "DRAMA QUEEN",     symbol: "◆", color: "pink",   sub: "something happened. it was a lot." },
+  { id: "tiramisu",  label: "TIRAMISU NEEDED", symbol: "◇", color: "yellow", sub: "self-explanatory. send tiramisu."  },
+];

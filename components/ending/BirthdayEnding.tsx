@@ -187,7 +187,7 @@ function BirthdayWish({ onDone }: { onDone: () => void }) {
           animate={{ opacity: 1 }}
           transition={{ delay: 2.2 }}
         >
-          27 TODAY &nbsp;·&nbsp; 22 MAY 2026
+          {SUBJECT.age} TODAY &nbsp;·&nbsp; 22 MAY {new Date().getFullYear()}
         </motion.p>
       </div>
 
@@ -392,7 +392,7 @@ export default function BirthdayEnding() {
               </motion.div>
 
               <p className="font-mono text-[9px] text-ink-muted mt-8 tracking-widest">
-                PD-OS v27.0 · SESSION COMPLETE · RUNTIME: {SUBJECT.age}Y · SHRINJAYEE_DAS: BLOCKED
+                PD-OS v{SUBJECT.age}.0 · SESSION COMPLETE · RUNTIME: {SUBJECT.age}Y · SHRINJAYEE_DAS: BLOCKED
               </p>
             </motion.div>
           )}

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { PERSONALITY_METRICS } from "@/lib/data";
+import { PERSONALITY_METRICS, SUBJECT } from "@/lib/data";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { staggerContainer, slideUp } from "@/lib/motion";
 import StatBar from "@/components/ui/StatBar";
@@ -97,7 +97,7 @@ export default function PersonalityEngine() {
         >
           <div className="h-px flex-1 bg-border" />
           <p className="font-mono text-[10px] text-ink-muted tracking-widest whitespace-nowrap">
-            DIAGNOSTICS V27.0 · RESULTS MAY VARY
+            DIAGNOSTICS V{SUBJECT.age}.0 · RESULTS MAY VARY
           </p>
           <div className="h-px flex-1 bg-border" />
         </motion.div>

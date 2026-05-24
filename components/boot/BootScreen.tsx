@@ -126,7 +126,7 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
           className="mb-6"
         >
           <p className="text-accent-lime text-xs tracking-widest uppercase mb-1">
-            PD-OS v27.0.0 — BIOS INITIALISED
+            PD-OS v{SUBJECT.age}.0.0 — BIOS INITIALISED
           </p>
           <p className="text-ink-secondary text-[11px] tracking-widest">
             BUILD 19990522 · {SUBJECT.name} PERSONALIY FRAMEWORK
