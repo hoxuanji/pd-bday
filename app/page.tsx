@@ -83,11 +83,13 @@ function ScrollProgress() {
   );
 }
 
-// ─── Voice note — a 22-min message from Jeemut, she controls playback ───────────
+// ─── Voice note — a message from Jeemut, she controls playback + seek ───────────
 
 function VoiceNote() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const toggle = useCallback(() => {
     const a = audioRef.current;
@@ -96,36 +98,73 @@ function VoiceNote() {
     else { a.pause(); setPlaying(false); }
   }, []);
 
+  const fmt = (s: number) =>
+    `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
   return (
-    <motion.button
-      onClick={toggle}
+    <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.6, duration: 0.6 }}
-      aria-label={playing ? "Pause voice note" : "Play voice note from Jeemut"}
       className="fixed bottom-6 left-6 z-40 flex items-center gap-3 rounded-full border border-border
         bg-bg-glass backdrop-blur-sm px-4 py-2.5 hover:border-accent-lime transition-colors duration-300 group"
     >
-      {/* equalizer / play glyph */}
+      <button
+        onClick={toggle}
+        aria-label={playing ? "Pause voice note" : "Play voice note from Jeemut"}
+        className="flex items-center cursor-pointer"
+      >
+        {playing ? (
+          <span className="flex items-end gap-[3px] h-4">
+            {[0, 1, 2].map((i) => (
+              <motion.span
+                key={i}
+                className="w-[3px] bg-accent-lime rounded-full"
+                animate={{ height: ["4px", "16px", "8px", "14px", "6px"] }}
+                transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+              />
+            ))}
+          </span>
+        ) : (
+          <span className="text-accent-lime text-xs">▶</span>
+        )}
+      </button>
+
       {playing ? (
-        <span className="flex items-end gap-[3px] h-4">
-          {[0, 1, 2].map((i) => (
-            <motion.span
-              key={i}
-              className="w-[3px] bg-accent-lime rounded-full"
-              animate={{ height: ["4px", "16px", "8px", "14px", "6px"] }}
-              transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
-            />
-          ))}
-        </span>
+        <div className="flex items-center gap-2.5">
+          <input
+            type="range"
+            min={0}
+            max={duration || 0}
+            value={current}
+            onChange={(e) => {
+              const t = Number(e.target.value);
+              if (audioRef.current) audioRef.current.currentTime = t;
+              setCurrent(t);
+            }}
+            aria-label="Seek voice note"
+            className="w-28 h-1 cursor-pointer"
+            style={{ accentColor: "#c8f135" }}
+          />
+          <span className="font-mono text-[10px] text-ink-secondary tabular-nums shrink-0">
+            {fmt(current)} / {fmt(duration)}
+          </span>
+        </div>
       ) : (
-        <span className="text-accent-lime text-xs">▶</span>
+        <span className="font-mono text-[10px] text-ink-secondary group-hover:text-accent-lime tracking-widest uppercase transition-colors duration-300">
+          ▷ A MESSAGE FROM JEEMUT
+        </span>
       )}
-      <span className="font-mono text-[10px] text-ink-secondary group-hover:text-accent-lime tracking-widest uppercase transition-colors duration-300">
-        {playing ? "PLAYING · MSG FROM JEEMUT" : "▷ A MESSAGE FOR YOU"}
-      </span>
-      <audio ref={audioRef} src="/voice-note.m4a" preload="none" onEnded={() => setPlaying(false)} />
-    </motion.button>
+
+      <audio
+        ref={audioRef}
+        src="/voice-note.m4a"
+        preload="none"
+        onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+        onTimeUpdate={(e) => setCurrent(e.currentTarget.currentTime)}
+        onEnded={() => setPlaying(false)}
+      />
+    </motion.div>
   );
 }
 
