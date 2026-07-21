@@ -129,7 +129,7 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
             PD-OS v{SUBJECT.age}.0.0 — BIOS INITIALISED
           </p>
           <p className="text-ink-secondary text-[11px] tracking-widest">
-            BUILD 19990522 · {SUBJECT.name} PERSONALIY FRAMEWORK
+            BUILD 19990522 · {SUBJECT.name} PERSONALITY FRAMEWORK
           </p>
           <div className="mt-3 h-px bg-border" />
         </motion.div>

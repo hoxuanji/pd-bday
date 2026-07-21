@@ -6,7 +6,6 @@ import { PHYSICAL_STATS } from "@/lib/data";
 import { staggerContainer, slideUp } from "@/lib/motion";
 import { ACCENT_COLORS, type AccentColor } from "@/lib/utils";
 import GlitchText from "@/components/ui/GlitchText";
-import ModuleCard, { ModuleHeader } from "@/components/ui/ModuleCard";
 
 const COLOR_DOT: Record<AccentColor, string> = {
   lime: "bg-accent-lime",

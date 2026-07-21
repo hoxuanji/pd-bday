@@ -33,7 +33,7 @@ function Orb({
   return (
     <motion.button
       onClick={onClick}
-      className="relative flex items-center justify-center cursor-pointer rounded-full focus:outline-none"
+      className="relative flex items-center justify-center cursor-pointer rounded-full"
       style={{ width: size, height: size }}
       whileTap={{ scale: 0.95 }}
       aria-label={label ?? "Mood orb"}

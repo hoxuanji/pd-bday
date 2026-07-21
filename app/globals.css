@@ -34,6 +34,11 @@
     color: #070706;
   }
 
+  :focus-visible {
+    outline: 2px solid #c8f135;
+    outline-offset: 2px;
+  }
+
   ::-webkit-scrollbar {
     width: 4px;
   }

@@ -97,7 +97,7 @@ export default function RightNow() {
             </h3>
 
             {/* Description */}
-            <p className="font-mono text-xs text-white/55 leading-relaxed max-w-2xl mb-6 line-clamp-2">
+            <p className="font-mono text-xs text-white/75 leading-relaxed max-w-2xl mb-6">
               {block.description}
             </p>
 

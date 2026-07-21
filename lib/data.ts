@@ -225,7 +225,7 @@ export const SIMULATOR_STEPS: SimulatorStep[] = [
         text: "One more fix. Then food.",
         effect: { food: +30, drama: +30, chaos: +20 },
         reaction:
-          "It is 4pm. The one fix became eleven fixes. You have not eaten. You are running on Slice and a very specific kind of rage that only hunger produces.",
+          "It is 4pm. The one fix became eleven fixes. You have not eaten. You are running on Frooty and a very specific kind of rage that only hunger produces.",
       },
     ],
   },
@@ -268,7 +268,7 @@ export const SIMULATOR_STEPS: SimulatorStep[] = [
       },
       {
         id: "stay",
-        text: "Cancel. Rom-com + Slice + Hrithik Roshan. Alone.",
+        text: "Cancel. Rom-com + Frooty + Hrithik Roshan. Alone.",
         effect: { sleep: -5, food: +20 },
         reaction:
           "You are in bed by 9pm watching Kaho Naa Pyaar Hai for the fourteenth time. You are completely unbothered. This is, in fact, a perfect evening.",
@@ -349,6 +349,7 @@ export type MemoryCard = {
   preview: string;
   full: string;
   tag: string;
+  image?: string; // real photo, shown full-brightness in the modal
 };
 
 export const MEMORY_VAULT: MemoryCard[] = [
@@ -362,6 +363,7 @@ export const MEMORY_VAULT: MemoryCard[] = [
     full:
       "The bill was ₹2,100. I had ₹900 in my pocket and was doing serious mental arithmetic about plate-washing logistics. She pulled out a bundle without a second thought. Day saved. Dignity preserved. She has not paid for food since — and somehow this is exactly as it should be. Some debts are structural. This is one of them.",
     tag: "MEMORY / FOUNDING INCIDENT / 2015",
+    image: "/papiya_5.jpg",
   },
   {
     id: "school-gate",
@@ -406,6 +408,7 @@ export const MEMORY_VAULT: MemoryCard[] = [
     full:
       "She left home for the first time at 24, to do a PhD in Italy. Packed more clothes than any wardrobe she would find there. Arrived. Immediately located the tiramisu. Began a new chapter with the same guilt, the same loyalty, the same inability to date outside India because that would be 'doing all this' when she came to study. The PhD is going well. The tiramisu expertise is going better.",
     tag: "MEMORY / MILESTONE / ITALY ARC",
+    image: "/papiya_4.jpg",
   },
   {
     id: "proposals",
@@ -417,6 +420,7 @@ export const MEMORY_VAULT: MemoryCard[] = [
     full:
       "[CLASSIFIED] Since approximately age 16, proposals numbering in the tens of thousands. All declined. Qualification threshold exists but is not published. Eye candy status: certified, self-aware, unbothered. The archive grows. The answer stays the same.",
     tag: "CLASSIFIED / ROMANTIC / ONGOING",
+    image: "/papiya_1.jpg",
   },
   {
     id: "shrinjayee",
@@ -439,6 +443,7 @@ export const MEMORY_VAULT: MemoryCard[] = [
     full:
       "[CLASSIFIED] LIIT has been identified as the consistent nemesis. Body's actual limit: ~2 drinks. Ego's stated limit: significantly higher. The subject has described her tolerance as 'equivalent to two drinks.' This is accurate and entirely the problem. Outcomes across all documented incidents are consistent and non-negotiable. The LIIT remains at large.",
     tag: "CLASSIFIED / BEVERAGE / NEMESIS",
+    image: "/papiya_6.jpg",
   },
   {
     id: "dance",
@@ -450,6 +455,7 @@ export const MEMORY_VAULT: MemoryCard[] = [
     full:
       "She does not open up easily. Gets quiet first. Then, when it is her people, the real self comes out. The real self dances like everyone is watching, because everyone is watching, and she is better for it. This is not performance. This is a person who knows exactly what they're doing and has decided to do it anyway. It's one of the best things about her.",
     tag: "MEMORY / CHARACTER / RECURRING",
+    image: "/papiya_2.jpg",
   },
 ];
 
@@ -539,6 +545,10 @@ export const BIRTHDAY_MESSAGE = {
     "",
     "Since then, you've conveniently forgotten how to pay when we eat together.",
     "",
+    "But you didn't hesitate that day.",
+    "You have never once hesitated when it was me.",
+    "That is the whole thing about you.",
+    "",
     "At some point, patterns stop being accidents.",
     "",
     "Then there was December 2023 —",
@@ -571,7 +581,7 @@ export const BIRTHDAY_MESSAGE = {
     "",
     "You are stubborn in ways that should probably be studied professionally.",
     "",
-    "You remove the chicken pieces from pizza with the concentration of a surgeon,",
+    "You remove the chicken from a perfectly good plate of curry with the concentration of a surgeon,",
     "and with complete moral certainty.",
     "",
     "You dance like embarrassment is a problem invented for other people.",

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import {
   ANALYTICS_STATS,
@@ -11,6 +11,9 @@ import {
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { staggerContainer, slideUp } from "@/lib/motion";
 import GlitchText from "@/components/ui/GlitchText";
+
+// Stat order: hunger→anger, chaos window, sleep debt, loyalty
+const STAT_ACCENTS = ["text-accent-pink", "text-accent-orange", "text-accent-blue", "text-accent-lime"];
 
 export default function ChaosAnalytics() {
   const { ref, isInView } = useScrollReveal();
@@ -50,7 +53,7 @@ export default function ChaosAnalytics() {
           animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6"
         >
-          {ANALYTICS_STATS.map((s) => (
+          {ANALYTICS_STATS.map((s, i) => (
             <motion.div
               key={s.label}
               variants={slideUp}
@@ -59,7 +62,7 @@ export default function ChaosAnalytics() {
               <p className="font-mono text-[9px] text-ink-muted tracking-widest uppercase mb-2 leading-relaxed">
                 {s.label}
               </p>
-              <p className="font-mono text-xl font-bold text-accent-lime tabular-nums">
+              <p className={`font-mono text-xl font-bold tabular-nums ${STAT_ACCENTS[i] ?? "text-accent-lime"}`}>
                 {s.value}
               </p>
               <p className="font-mono text-[10px] text-ink-secondary mt-1 leading-relaxed">

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, type TargetAndTransition } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useSpring, MotionConfig, type TargetAndTransition } from "framer-motion";
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import BootScreen from "@/components/boot/BootScreen";
@@ -34,6 +34,7 @@ export default function Home() {
   const handleBootComplete = useCallback(() => setBooted(true), []);
 
   return (
+    <MotionConfig reducedMotion="user">
     <main className="relative bg-bg-base min-h-screen">
       <AnimatePresence>
         {!booted && <BootScreen key="boot" onComplete={handleBootComplete} />}
@@ -47,6 +48,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
+            <ScrollProgress />
             <SideNav />
             <Hero />
             <RightNow />
@@ -62,6 +64,21 @@ export default function Home() {
         )}
       </AnimatePresence>
     </main>
+    </MotionConfig>
+  );
+}
+
+// ─── Scroll progress bar (works at all breakpoints — mobile has no SideNav) ─────
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-0.5 bg-accent-lime z-50 origin-left"
+      style={{ scaleX }}
+      aria-hidden
+    />
   );
 }
 

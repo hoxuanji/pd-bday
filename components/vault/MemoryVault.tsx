@@ -165,7 +165,7 @@ function VaultCard({
       {/* Hover access prompt */}
       <div className="absolute bottom-4 right-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <span className="font-mono text-[9px] text-ink-muted tracking-widest">
-          [ ACCESS ]
+          {card.image ? "[ ◉ PHOTO ]" : "[ ACCESS ]"}
         </span>
       </div>
     </motion.div>
@@ -223,6 +223,14 @@ function MemoryModal({
               ⚠ CLASSIFIED — AUTHORISED ACCESS ONLY
             </p>
           </div>
+        )}
+
+        {card.image && (
+          <img
+            src={card.image}
+            alt={`Papiya — ${card.title.toLowerCase()}`}
+            className="w-full aspect-[4/3] object-cover rounded-sm mb-4 border border-border"
+          />
         )}
 
         <div className="bg-bg-base rounded-sm p-5">

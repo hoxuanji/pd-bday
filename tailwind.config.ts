@@ -24,7 +24,7 @@ const config: Config = {
         ink: {
           primary: "#f2f2ef",
           secondary: "#7a7a6e",
-          muted: "#3d3d38",
+          muted: "#6a6a60",
         },
         accent: {
           lime: "#c8f135",

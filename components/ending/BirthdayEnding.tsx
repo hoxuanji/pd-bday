@@ -222,9 +222,8 @@ export default function BirthdayEnding() {
   const [visibleLines, setVisibleLines] = useState(0);
   const canvasRef = useConfetti(phase === "confetti");
 
-  // Trigger as soon as ANY pixel of the section enters the viewport.
-  // Also fires if user is within 120px of the bottom of the page (handles
-  // the case where there is no more scroll room and the section is the last one).
+  // Trigger only once the section is substantially in view (55%), so the letter
+  // never detonates on the first pixel or mid-scroll before she's arrived.
   useEffect(() => {
     function fire() {
       if (triggered.current) return;
@@ -232,26 +231,13 @@ export default function BirthdayEnding() {
       setPhase("wish");
     }
 
-    // IntersectionObserver with threshold 0
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) fire(); },
-      { threshold: 0, rootMargin: "0px 0px -1px 0px" }
+      { threshold: 0.55 }
     );
     if (sectionRef.current) observer.observe(sectionRef.current);
 
-    // Scroll-near-bottom fallback
-    function onScroll() {
-      const scrollBottom = window.scrollY + window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight;
-      if (scrollBottom >= docHeight - 120) fire();
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); // check immediately in case already at bottom
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", onScroll);
-    };
+    return () => observer.disconnect();
   }, []);
 
   const handleWishDone = useCallback(() => setPhase("lines"), []);
@@ -387,7 +373,7 @@ export default function BirthdayEnding() {
                     uppercase text-ink-secondary hover:border-accent-lime hover:text-accent-lime
                     transition-colors duration-300"
                 >
-                  [ RESTART EXPERIENCE ]
+                  [ BACK TO TOP ]
                 </MagneticButton>
               </motion.div>
 
