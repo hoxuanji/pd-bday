@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useScroll, useSpring, MotionConfig, type TargetAndTransition } from "framer-motion";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import BootScreen from "@/components/boot/BootScreen";
 import { SUBJECT, CHAOS_WEATHER } from "@/lib/data";
@@ -49,6 +49,7 @@ export default function Home() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <ScrollProgress />
+            <VoiceNote />
             <SideNav />
             <Hero />
             <RightNow />
@@ -79,6 +80,52 @@ function ScrollProgress() {
       style={{ scaleX }}
       aria-hidden
     />
+  );
+}
+
+// ─── Voice note — a 22-min message from Jeemut, she controls playback ───────────
+
+function VoiceNote() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = useCallback(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (a.paused) { a.play(); setPlaying(true); }
+    else { a.pause(); setPlaying(false); }
+  }, []);
+
+  return (
+    <motion.button
+      onClick={toggle}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.6, duration: 0.6 }}
+      aria-label={playing ? "Pause voice note" : "Play voice note from Jeemut"}
+      className="fixed bottom-6 left-6 z-40 flex items-center gap-3 rounded-full border border-border
+        bg-bg-glass backdrop-blur-sm px-4 py-2.5 hover:border-accent-lime transition-colors duration-300 group"
+    >
+      {/* equalizer / play glyph */}
+      {playing ? (
+        <span className="flex items-end gap-[3px] h-4">
+          {[0, 1, 2].map((i) => (
+            <motion.span
+              key={i}
+              className="w-[3px] bg-accent-lime rounded-full"
+              animate={{ height: ["4px", "16px", "8px", "14px", "6px"] }}
+              transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+            />
+          ))}
+        </span>
+      ) : (
+        <span className="text-accent-lime text-xs">▶</span>
+      )}
+      <span className="font-mono text-[10px] text-ink-secondary group-hover:text-accent-lime tracking-widest uppercase transition-colors duration-300">
+        {playing ? "PLAYING · MSG FROM JEEMUT" : "▷ A MESSAGE FOR YOU"}
+      </span>
+      <audio ref={audioRef} src="/voice-note.m4a" preload="none" onEnded={() => setPlaying(false)} />
+    </motion.button>
   );
 }
 
