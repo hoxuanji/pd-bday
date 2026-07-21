@@ -4,7 +4,7 @@ import { SUBJECT } from "@/lib/data";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pd-bday.vercel.app"), // ponytail: swap for real Vercel URL at deploy
+  metadataBase: new URL("https://papiya-bday-27.vercel.app"),
   title: `PAPIYA — PD-OS v${SUBJECT.age}.0`,
   description: "A birthday dossier. Chaos, drama, loyalty — fully documented.",
   robots: "noindex, nofollow",
