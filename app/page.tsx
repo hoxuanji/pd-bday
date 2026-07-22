@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useScroll, useSpring, MotionConfig, type TargetAndTransition } from "framer-motion";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import BootScreen from "@/components/boot/BootScreen";
 import { SUBJECT, CHAOS_WEATHER } from "@/lib/data";
@@ -49,6 +49,7 @@ export default function Home() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <ScrollProgress />
+            <BackToTop />
             <SideNav />
             <Hero />
             <RightNow />
@@ -79,6 +80,37 @@ function ScrollProgress() {
       style={{ scaleX }}
       aria-hidden
     />
+  );
+}
+
+// ─── Back to top — fills the corner, appears after scrolling past the hero ──────
+
+function BackToTop() {
+  const { scrollYProgress } = useScroll();
+  const [show, setShow] = useState(false);
+  useEffect(
+    () => scrollYProgress.on("change", (v) => setShow(v > 0.08)),
+    [scrollYProgress]
+  );
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.button
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 8 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Back to top"
+          className="fixed bottom-6 left-6 z-40 flex items-center gap-2 rounded-full border border-border
+            bg-bg-glass backdrop-blur-sm px-3.5 py-2 hover:border-accent-lime group transition-colors duration-300"
+        >
+          <span className="text-accent-lime text-xs group-hover:-translate-y-0.5 transition-transform duration-200">↑</span>
+          <span className="font-mono text-[10px] text-ink-secondary group-hover:text-accent-lime tracking-widest uppercase transition-colors duration-300">
+            TOP
+          </span>
+        </motion.button>
+      )}
+    </AnimatePresence>
   );
 }
 

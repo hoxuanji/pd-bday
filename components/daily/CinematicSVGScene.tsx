@@ -301,8 +301,8 @@ function HungerSVG() {
 
       {/* ── CRITICAL warning flicker ── */}
       <motion.text x={190} y={228} fill={LIM} fontSize={44} fontFamily={MONO} fontWeight="700"
-        animate={pre ? {} : { opacity: [1, 0.1, 1, 0.6, 1] }}
-        transition={{ duration: 0.35, repeat: Infinity, repeatDelay: 3.5 }}
+        animate={pre ? {} : { opacity: [1, 0.3, 1, 0.7, 1] }}
+        transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 3.5 }}
       >⚠ CRITICAL</motion.text>
 
       {/* ── Food icons — large, varied trajectories ── */}
@@ -328,8 +328,8 @@ function HungerSVG() {
 
       {/* ── Neon flicker overlay ── */}
       <motion.rect width={1200} height={900} fill="#84CC160A"
-        animate={pre ? {} : { opacity: [1, 0.05, 1, 0.4, 1] }}
-        transition={{ duration: 0.28, repeat: Infinity, repeatDelay: 5 }}
+        animate={pre ? {} : { opacity: [1, 0.4, 1, 0.7, 1] }}
+        transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 5 }}
       />
 
       {/* ── Horizontal energy bar ── */}

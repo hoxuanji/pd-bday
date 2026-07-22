@@ -211,9 +211,105 @@ function BirthdayWish({ onDone }: { onDone: () => void }) {
   );
 }
 
+// ─── Candle cake — she blows the candles to start the finale ────────────────────
+
+function CandleCake({ onComplete }: { onComplete: () => void }) {
+  const COUNT = 8;
+  const COLORS = ["#c8f135", "#ff3c78", "#4d9fff", "#ff8c42", "#ffd60a"];
+  const [lit, setLit] = useState<boolean[]>(() => Array(COUNT).fill(true));
+  const remaining = lit.filter(Boolean).length;
+  const done = useRef(false);
+
+  useEffect(() => {
+    if (remaining === 0 && !done.current) {
+      done.current = true;
+      const t = setTimeout(onComplete, 1100);
+      return () => clearTimeout(t);
+    }
+  }, [remaining, onComplete]);
+
+  const blow = (i: number) => setLit((p) => p.map((v, idx) => (idx === i ? false : v)));
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col items-center text-center py-10"
+    >
+      <p className="font-mono text-[10px] text-accent-lime tracking-widest uppercase mb-3">
+        // MAKE A WISH
+      </p>
+      <p className="font-sans text-xl md:text-2xl text-ink-primary mb-12">
+        {remaining > 0 ? "Blow out the candles." : "Now make it count. ✦"}
+      </p>
+
+      {/* Candle row */}
+      <div className="flex items-end justify-center gap-3 md:gap-4">
+        {lit.map((isLit, i) => (
+          <button
+            key={i}
+            onClick={() => blow(i)}
+            disabled={!isLit}
+            aria-label={isLit ? `Blow out candle ${i + 1}` : `Candle ${i + 1} is out`}
+            className="relative flex flex-col items-center group disabled:cursor-default cursor-pointer"
+          >
+            <span className="relative h-7 w-3 flex items-end justify-center">
+              <AnimatePresence>
+                {isLit ? (
+                  <motion.span
+                    key="flame"
+                    exit={{ opacity: 0, y: -10, scale: 0 }}
+                    className="absolute bottom-0 w-2.5 h-5 rounded-full"
+                    style={{ background: "radial-gradient(circle at 50% 75%, #fff 0%, #ffd60a 45%, #ff8c42 85%)" }}
+                    animate={{ scaleY: [1, 1.25, 0.92, 1.15, 1], opacity: [0.85, 1, 0.85, 1, 0.85] }}
+                    transition={{ duration: 0.7, repeat: Infinity, ease: "easeInOut", delay: i * 0.08 }}
+                  />
+                ) : (
+                  <motion.span
+                    key="smoke"
+                    initial={{ opacity: 0.6, y: 0, scaleX: 1 }}
+                    animate={{ opacity: 0, y: -20, scaleX: 1.6 }}
+                    transition={{ duration: 1.3, ease: "easeOut" }}
+                    className="absolute bottom-1 w-1 h-4 rounded-full bg-ink-secondary"
+                  />
+                )}
+              </AnimatePresence>
+            </span>
+            <span className="w-0.5 h-1.5 bg-ink-muted" />
+            <span
+              className="w-2.5 h-16 rounded-sm transition-[filter,transform] group-hover:brightness-125 group-hover:-translate-y-0.5"
+              style={{ background: COLORS[i % COLORS.length], opacity: isLit ? 1 : 0.55 }}
+            />
+          </button>
+        ))}
+      </div>
+
+      {/* Cake */}
+      <div className="w-72 md:w-96 mx-auto -mt-px">
+        <div className="h-5 bg-ink-primary/90 rounded-t-lg" />
+        <div className="h-20 bg-bg-elevated border-x border-b border-border rounded-b-lg flex items-center justify-center">
+          <span className="font-mono text-[10px] text-ink-muted tracking-widest tabular-nums">
+            {remaining > 0 ? `${remaining} / ${COUNT} STILL LIT` : "ALL OUT · WISH LOCKED IN"}
+          </span>
+        </div>
+      </div>
+
+      {remaining > 0 && (
+        <button
+          onClick={() => setLit(Array(COUNT).fill(false))}
+          className="mt-10 font-mono text-[10px] text-ink-muted hover:text-accent-lime tracking-widest uppercase transition-colors duration-200"
+        >
+          [ or blow them all at once → ]
+        </button>
+      )}
+    </motion.div>
+  );
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
-type Phase = "idle" | "wish" | "lines" | "final" | "confetti";
+type Phase = "idle" | "cake" | "wish" | "lines" | "final" | "confetti";
 
 export default function BirthdayEnding() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -222,13 +318,13 @@ export default function BirthdayEnding() {
   const [visibleLines, setVisibleLines] = useState(0);
   const canvasRef = useConfetti(phase === "confetti");
 
-  // Trigger only once the section is substantially in view (55%), so the letter
-  // never detonates on the first pixel or mid-scroll before she's arrived.
+  // Reveal the cake once the section is substantially in view (55%). She blows
+  // the candles to start the finale — the letter is never triggered involuntarily.
   useEffect(() => {
     function fire() {
       if (triggered.current) return;
       triggered.current = true;
-      setPhase("wish");
+      setPhase("cake");
     }
 
     const observer = new IntersectionObserver(
@@ -240,6 +336,7 @@ export default function BirthdayEnding() {
     return () => observer.disconnect();
   }, []);
 
+  const handleCakeDone = useCallback(() => setPhase("wish"), []);
   const handleWishDone = useCallback(() => setPhase("lines"), []);
 
   // Lines appear one by one
@@ -293,6 +390,11 @@ export default function BirthdayEnding() {
           </p>
           <div className="h-px bg-border" />
         </div>
+
+        {/* Cake — she blows the candles to begin */}
+        <AnimatePresence>
+          {phase === "cake" && <CandleCake key="cake" onComplete={handleCakeDone} />}
+        </AnimatePresence>
 
         {/* Message lines */}
         {(phase === "lines" || phase === "final" || phase === "confetti") && (
