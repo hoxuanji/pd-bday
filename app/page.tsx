@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useScroll, useSpring, MotionConfig, type Targe
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import BootScreen from "@/components/boot/BootScreen";
-import VoiceNoteGate from "@/components/ui/VoiceNoteGate";
 import { SUBJECT, CHAOS_WEATHER } from "@/lib/data";
 import { ACCENT_COLORS } from "@/lib/utils";
 
@@ -50,7 +49,6 @@ export default function Home() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <ScrollProgress />
-            <VoiceNoteGate />
             <SideNav />
             <Hero />
             <RightNow />
